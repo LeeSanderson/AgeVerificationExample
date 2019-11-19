@@ -4,7 +4,7 @@ An example ASP.NET core application using ASP.NET Core Identity for authenticati
 
 Features include:
 
-- [Hexagonal/Onion Architecture model AKA Ports and adapters](https://en.wikipedia.org/wiki/Hexagonal_architecture_(software)
+- [Hexagonal/ Onion Architecture model AKA Ports and adapters](https://en.wikipedia.org/wiki/Hexagonal_architecture_(software))
 - Using [Domain driven design](https://en.wikipedia.org/wiki/Domain-driven_design) bounded contexts.
 - Customised ASP.NET Core Identity models.
 - Use of [Authorize] attributes to prevent access to actions that require an authenticated user. 
