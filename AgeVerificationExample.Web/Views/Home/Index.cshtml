@@ -1,0 +1,27 @@
+﻿@using AgeVerificationExample.Web.Contracts
+@inject IApplicationUserContext UserContext
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+    <div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+
+        @if (!UserContext.IsSignedIn(User))
+        {
+            <p>
+                Please <a asp-area="Identity" asp-page="/Account/Login">Login</a> or
+                <a asp-area="Identity" asp-page="/Account/Register">Register</a>
+            </p>
+        }
+        else
+        {
+            <p>
+                Hello. You are logged in as <span class="text-dark">@User.Identity.Name</span>.
+            </p>
+            <p>
+                Please <a asp-controller="LoginHistory" asp-action="Index">View your login history</a> or
+                <a asp-controller="LoginHistory" asp-action="Chart">View the login history statistics</a>
+            </p>
+        }
+    </div>

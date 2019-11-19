@@ -1,0 +1,42 @@
+﻿@using AgeVerificationExample.Web.Contracts.Models
+@model LoginAttemptPagedList
+@{
+    ViewData["Title"] = "Login History";
+}
+
+    <form asp-action="List">
+        @if (Model.Count == 0)
+        {
+            <Alert alert-type="Info">
+                <strong>No login attempts found</strong>
+            </Alert>
+        }
+        else
+        {
+            <h3>@Model.Count login attempt@(Model.Count > 1 ? "s" : "") found</h3>
+
+            <table class="table responsive-table table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Successful?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var loginAttempt in Model.Page)
+                    {
+                        <tr>
+                            <td data-title="Name">
+                                @loginAttempt.AttemptDate.ToString("dd/MM/yyyy hh:mm:ss")
+                            </td>
+                            <td>
+                                @loginAttempt.Status
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <paginator asp-for="PageNumber" current="@Model.PageNumber" pageSize="@Model.PageSize" count="@Model.Count"></paginator>
+        }
+    </form>

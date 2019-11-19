@@ -1,0 +1,27 @@
+﻿@model AgeVerificationExample.Web.Helpers.PaginatorViewModel
+
+@if (Model.Buttons.Count > 0)
+{
+    <nav>
+        <ul class="pagination">
+            @foreach (var button in Model.Buttons)
+            {
+                if (button.Disabled)
+                {
+                    <li class="page-item disabled"><span aria-hidden="true">@button.Value</span></li>
+                }
+                else
+                {
+                    if (button.Active)
+                    {
+                        <li class="page-item active"><a class="page-link" href="#">@button.Value</a></li>
+                    }
+                    else
+                    {
+                        <li class="page-item"><span><button name="@Model.ButtonName" type="submit" class="btn btn-link page-link" value="@button.Value">@button.Value</button></span></li>
+                    }
+                }
+            }
+        </ul>
+    </nav>
+}

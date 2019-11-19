@@ -1,0 +1,45 @@
+﻿@using AgeVerificationExample.Web.Contracts.Models
+@model List<LoginStatusCount>
+@{
+    ViewData["Title"] = "Login History Chart";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/lib/chartjs/Chart.min.css" />
+}
+
+
+<h1>@ViewData["Title"]</h1>
+
+<canvas id="chart"></canvas>
+
+@section Scripts {
+    <script src="~/lib/chartjs/Chart.bundle.min.js"></script>
+    <script src="~/lib/patternomaly/dist/patternomaly.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var ctx = document.getElementById('chart').getContext('2d');
+            var chartDataPoints = [@string.Join(", ", Model.Select(s => s.Count))];
+            var chartDataLabels = [@Html.Raw(string.Join(", ", Model.Select(s => "'" + s.Status.ToString() + "'")))];
+            var chartData = {
+                datasets: [{
+                    data: chartDataPoints,
+                    backgroundColor: [
+                        pattern.draw('square', '#ff6384'),
+                        pattern.draw('circle', '#36a2eb'),
+                        pattern.draw('triangle', '#ffce56')
+                    ]
+                }],
+                // These labels appear in the legend and in the tooltips when hovering different arcs
+                labels: chartDataLabels
+            };
+            var chartOptions = {};
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: chartData,
+                options: chartOptions
+            });
+        });
+    </script>
+}
+
