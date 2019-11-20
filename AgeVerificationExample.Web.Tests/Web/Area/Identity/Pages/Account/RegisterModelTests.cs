@@ -53,19 +53,27 @@ namespace AgeVerificationExample.Web.Tests.Web.Area.Identity.Pages.Account
             page.ExpectModelError(string.Empty, "Your registration details have been locked out due to multiple registration failures.");
         }
 
-        [Fact]
-        public async Task OnPostAsync_ReturnsErrorIfUserUnder18()
+        [Theory]
+        [InlineData(-18, -1, "Birthday tomorrorw")]
+        [InlineData(-17, 0, "Only 17")]
+        public async Task OnPostAsync_ReturnsErrorIfUserUnder18(int yearOffset, int dayOffset, string testDescription)
         {
             // Given
             var page = CreatePage();
-            page.Input = new RegisterInputModel { Email = "kp@example.com", Name = "KP", DateOfBirth = DateTime.Now.AddYears(-16) };
+            page.Input = new RegisterInputModel
+            {
+                Email = "kp@example.com",
+                Name = "KP",
+                DateOfBirth = GetDateOfBirthFromOffset(yearOffset, dayOffset)
+            };
 
             // When
             var actionResult = await page.OnPostAsync();
 
             // Then
-            actionResult.IsPageResult();
             page.ExpectModelError(string.Empty, "You must be at least 18 to register");
+            actionResult.IsPageResult();
+            Assert.NotNull(testDescription);
         }
 
         [Fact]
@@ -93,18 +101,28 @@ namespace AgeVerificationExample.Web.Tests.Web.Area.Identity.Pages.Account
             page.ExpectModelError(string.Empty, "Your registration details have been locked out due to multiple registration failures.");
         }
 
-        [Fact]
-        public async Task OnPostAsync_RedirectsToCreatePasswordPageIfValidationSuccessful()
+        [Theory]
+        [InlineData(-18, 0, "Birthday today")]
+        [InlineData(-18, 1, "Over 18 by 1 day")]
+        [InlineData(-19, 0, "Over 18")]
+        public async Task OnPostAsync_RedirectsToCreatePasswordPageIfValidationSuccessful(
+            int yearOffset, int dayOffset, string testDescription)
         {
             // Given
             var page = CreatePage();
-            page.Input = new RegisterInputModel { Email = "kp@example.com", Name = "KP", DateOfBirth = DateTime.Now.AddYears(-19) };
+            page.Input = new RegisterInputModel
+                            {
+                                Email = "kp@example.com",
+                                Name = "KP",
+                                DateOfBirth = GetDateOfBirthFromOffset(yearOffset, dayOffset)
+                            };
 
             // When
             var actionResult = await page.OnPostAsync();
 
             // Then
             actionResult.IsRedirectToPageResult();
+            Assert.NotNull(testDescription);
         }
 
         /// <summary>
@@ -120,5 +138,17 @@ namespace AgeVerificationExample.Web.Tests.Web.Area.Identity.Pages.Account
             page.Url = mockUrlHelper.Object;
             return page;
         }
+
+        /// <summary>
+        /// Date of birth helper
+        /// </summary>
+        /// <param name="yearOffset">The year offset from today</param>
+        /// <param name="dayOffset">The number of days to add after calculating the date of birth using the year offset</param>
+        /// <returns>The date of the date of birth</returns>
+        private DateTime GetDateOfBirthFromOffset(int yearOffset, int dayOffset)
+        {
+            var today = DateTime.Today;
+            return new DateTime(today.Year + yearOffset, today.Month, today.Day).AddDays(dayOffset);
+        }    
     }
 }

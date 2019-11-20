@@ -61,9 +61,11 @@ namespace AgeVerificationExample.Web.Areas.Identity.Pages.Account
                 var today = DateTime.Today;
                 var yearOfBirth = dob.Year;
                 var age = (today.Year - yearOfBirth);
-                if (today.Month < dob.Month || today.Month == dob.Month && today.Day <= dob.Day)
+
+                // Reduce age by 1 if not had birthday yet this year
+                if (today.Month > dob.Month || today.Month == dob.Month && today.Day > dob.Day)
                 {
-                    age++;
+                    age--;
                 }
 
                 // Validate age of registrant.
